@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var hbs = require('hbs');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -12,6 +13,22 @@ var visitCounter = require('./helpers/visitCounter');
 
 var app = express();
 
+//enable handlebars dateformat support
+hbs.registerHelper('dateformat', require('handlebars-dateformat'));
+
+//handlebars helper to get icon url from link
+hbs.registerHelper('getFavicon', function(url){
+  const regex = /^.+?[^\/:](?=[?\/]|$)/gm;
+  var string = regex.exec(url);
+  return string;
+})
+
+hbs.registerHelper('getSite', function(url){
+  const regex = /.+\/\/|www.|\..+/gm;
+  var string = url.replace(regex, "")
+  return string;
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -22,8 +39,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('*', apiKey.router)
 app.use('/*', visitCounter);
+app.use('*', apiKey.router)
 app.use('/', indexRouter);
 app.use('/game', gameRouter);
 

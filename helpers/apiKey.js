@@ -1,5 +1,5 @@
 //this might work well as a worker?
-const axios = require('axios');
+var axios = require('axios');
 var express = require('express');
 var router = express.Router();
 
@@ -8,7 +8,7 @@ var expiresAt;
 //get client id and secret from ENV
 
 router.get('*', (req, res, next) => {
-	req.API_TOKEN = token;
+	res.locals.API_TOKEN = token;
 	next();
 });
 

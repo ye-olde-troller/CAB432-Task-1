@@ -1,0 +1,58 @@
+<div class="w-full grid grid-cols-4 grid-flow-row h-full">
+	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end bg-red-400">
+		<img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{cover.image_id}}.png" class="w-4/5 h-min">
+		<div class="flex flex-row flex-wrap gap-3 mt-5 w-4/5">
+			{{#each websites}}
+				<a target="_blank" rel="noopener noreferrer" href="{{this.url}}" class="aspect-square w-8">
+					<img src="{{getFavicon this.url}}/favicon.ico" alt="{{getSite this.url}}" class="w-full text-sm">
+				</a>
+			{{/each}}
+			
+		</div>
+	</div>
+	<div class="col-span-2 bg-green-400 pt-28 px-3 flex flex-col">
+		<div class="flex flex-row">
+			<h1 class="text-5xl font-semibold">{{name}}</h1>
+			<span class="ps-2 text-2xl self-end">({{dateformat first_release_date "YYYY"}})</span>
+		</div>
+		<div class="text-xl flex flex-row gap-2 italic">
+			{{#each genres}}
+				<span>{{this.name}}</span>
+			{{/each}}
+		</div>
+		<div class="flex flex-row text-2xl">
+			{{#each involved_companies}}
+				{{#if this.developer}}
+					<span class="mt-2">{{this.name}}</span>
+					<span class="mt-2 mx-1">•</span>
+				{{/if}}
+				{{#if this.publisher}}
+					<span class="mt-2">{{this.name}}</span>
+				{{/if}}
+			{{/each}}
+			
+		</div>
+		<div class="flex flex-row">
+			<a href="#" class="w-8 aspect-square bg-black">Steam</a>
+		</div>
+		<p class="text-normal">
+			{{summary}}
+		</p>
+		<div class="w-full bg-amber-300 mt-5">
+			<h2 class="text-3xl">Similar Games</h2>
+			<div class="grid grid-cols-5 gap-3" id="similar games list">
+				{{#each similar_games}}
+					<a class="flex flex-col w-full" href="/game/{{this.id}}">
+						<img class="h-min w-full" src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{this.cover.image_id}}.png">
+						<span class="text-xl">{{this.name}}</span>
+					</a>
+				{{/each}}
+			</div>
+		</div>
+		<p>game is {{gameID}}</p>
+	</div>
+	<div class="col-span-1 bg-blue-400">
+		current stream column
+	</div>
+</div>
+

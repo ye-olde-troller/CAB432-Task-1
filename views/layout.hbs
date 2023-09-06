@@ -4,7 +4,25 @@
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <body>
+  <body class="p-0 font-sans w-full h-screen">
+    <nav class="w-full flex flex-row bg-zinc-200 px-10 h-14 justify-between items-center">
+      <div class="flex flex-row items-center">
+        <a class="text-xl font-semibold leading-none h-fit" href="/">Brand</a>
+        <div class="flex flex-row justify-self-start ps-6 items-center">
+          <ul class="me-auto mt-2 lg:mt-0 flex flex-row gap-3">
+            <li class="flex items-center">
+              <a class="text-lg align-middle leading-none h-min" href="/" aria-current="page">Home</a>
+            </li>
+          </ul>        
+        </div>
+      </div>
+      <form class="flex my-2 lg:my-0" action="/search">
+        <input class="placeholder:text-zinc-600 leading-normal ps-2 sm:me-2 rounded-lg" type="text" placeholder="Search" id="query">
+        <button class="border-emerald-500 border-2 rounded-lg hover:bg-emerald-500 px-2 btn-outline-success my-2 sm:my-0 text-lg align-middle" type="submit">Search</button>
+      </form>
+      </div>
+    </nav>
+    
     {{{body}}}
   </body>
 </html>
