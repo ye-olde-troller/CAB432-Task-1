@@ -77,23 +77,35 @@ router.get('/:gameID', (req, res, next) => {
 	.then((data) => {
 		//${data.external_games.find(element => element.category == 14).uid}
 		var games = {}
+		//get the list of similar games in format {igdb id: twitch game id}
 		for(game in data.similar_games){
 			games[data.similar_games[game].id] = data.similar_games[game].external_games.find(entry => entry.category == 14).uid;
 		}
+		//get a list of streams
 		getStreams(games, res.locals.API_TOKEN)
 		.then(streams => {
-			console.log(data);
+			//console.log(streams);
 			for(game in data.similar_games){
 				data.similar_games[game].stream = streams[data.similar_games[game].id];
 			}
 		})
 		.then(() => {
-			res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
+			getStream(data.similar_games[game].external_games.find(entry => entry.category == 14).uid, 10, res.locals.API_TOKEN)
+			.then(streams => {
+				data.streams = streams;
+				console.log(streams);
+				res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
+			})
+			.catch(e => {
+				console.error(e);
+			})
+			//TODO: get list of streams for the current game
+			//develop a system to render it and switch source on change.
 		})
 		.catch(e => {
 			console.error(e);
 		})
-		console.log(games);
+		//console.log(games);
 	})
 	.catch(e => {
 		console.log(e);
@@ -105,14 +117,16 @@ function getStreams(gameIDs, apiToken){
 	return new Promise((resolve, reject) => {
 		streams = []
 		for(gameId in gameIDs){
-			streams.push(getStream(gameIDs[gameId], apiToken));
+			streams.push(getStream(gameIDs[gameId], 1, apiToken));
 		}
 		Promise.allSettled(streams).then((values) => {
 			//format responses
 			var response = {}
 			for(stream in values){
 				//console.log(values[stream]);
-				response[getKeyByValue(gameIDs, values[stream].value.game_id)] = values[stream].value;
+				//TODO: get videos for any games that don't have a current stream.
+				console.log(values[stream].value[0].game_id);
+				response[getKeyByValue(gameIDs, values[stream].value[0].game_id)] = values[stream].value[0];
 			}
 			resolve(response);
 		});
@@ -120,9 +134,9 @@ function getStreams(gameIDs, apiToken){
 }
 
 
-function getStream(gameId, apiToken){
+function getStream(gameId, streamCount, apiToken){
 	return new Promise((resolve, reject) => {
-		axios.get(`https://api.twitch.tv/helix/streams?game_id=${gameId}&first=1`, {
+		axios.get(`https://api.twitch.tv/helix/streams?game_id=${gameId}&first=${streamCount}`, {
 			headers: {
 				'Accept': 'application/json',
 				'Client-ID': process.env.CLIENT_ID,
@@ -130,8 +144,8 @@ function getStream(gameId, apiToken){
 			},
 		})
 		.then(response => {
-			console.log(response.data);
-			return response.data.data[0];
+//			console.log(response.data.data);
+			return response.data.data;
 		})
 		.then(data => {
 			resolve(data);
@@ -142,6 +156,14 @@ function getStream(gameId, apiToken){
 		})
 	})
 }  
+
+//call this if there's no streams for a given game
+//we replace the stream with a VOD instead
+function getVideos(gameId, apiToken){
+	return new Promise((resolve, reject) => {
+
+	})
+}
 
 function getKeyByValue(object, value) {
 	return Object.keys(object).find(key => object[key] === value);

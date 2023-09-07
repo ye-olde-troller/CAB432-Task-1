@@ -5,6 +5,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
+var {createS3Bucket} = require("./helpers/S3Manager");
+
+const bucketName = process.env.BUCKET_NAME;
+createS3Bucket(bucketName).then(result => {
+  console.log("test");
+});
 
 var apiKey = require('./helpers/apiKey');
 var indexRouter = require('./routes/index');
