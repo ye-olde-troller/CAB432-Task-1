@@ -40,11 +40,17 @@
 		</p>
 		<div class="w-full bg-amber-300 mt-5">
 			<h2 class="text-3xl">Similar Games</h2>
-			<div class="grid grid-cols-5 gap-3" id="similar games list">
+			<div class="grid grid-cols-4 gap-3" id="similar games list">
 				{{#each similar_games}}
 					<a class="flex flex-col w-full" href="/game/{{this.id}}">
 						<img class="h-min w-full" src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{this.cover.image_id}}.png">
 						<span class="text-xl">{{this.name}}</span>
+						<iframe
+							src="https://player.twitch.tv/?channel={{this.stream.user_login}}&parent=localhost&muted=true"
+							height="auto"
+							width="100%"
+							allowfullscreen>
+						</iframe>
 					</a>
 				{{/each}}
 			</div>

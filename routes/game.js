@@ -32,6 +32,8 @@ router.get('/:gameID', (req, res, next) => {
 		similar_games.name,
 		similar_games.id,
 		similar_games.cover.image_id,
+		similar_games.external_games.uid,
+		similar_games.external_games.category,
 		slug,
 		status,
 		storyline,
@@ -67,34 +69,83 @@ router.get('/:gameID', (req, res, next) => {
 		return tempData;
 	})
 	.then((data) => {
+		
 		//make all changes to make data suitable here
 		data.first_release_date = data.first_release_date * 1000; //because timestamp doesn't include miliseconds
 		return data;
 	})
 	.then((data) => {
-		axios.get(`https://api.twitch.tv/helix/streams?game_id=${data.similar_games[0].id}`, {
-			headers: {
-				'Accept': 'application/json',
-				'Client-ID': process.env.CLIENT_ID,
-				'Authorization': "Bearer " + res.locals.API_TOKEN
-			},
+		//${data.external_games.find(element => element.category == 14).uid}
+		var games = {}
+		for(game in data.similar_games){
+			games[data.similar_games[game].id] = data.similar_games[game].external_games.find(entry => entry.category == 14).uid;
+		}
+		getStreams(games, res.locals.API_TOKEN)
+		.then(streams => {
+			console.log(data);
+			for(game in data.similar_games){
+				data.similar_games[game].stream = streams[data.similar_games[game].id];
+			}
 		})
-		.then(response => {
-			console.log(response)
-			response.data;
-		})
-		.then(data => {
+		.then(() => {
+			res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
 		})
 		.catch(e => {
 			console.error(e);
 		})
-
-		res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
+		console.log(games);
 	})
 	.catch(e => {
 		console.log(e);
 		next(createHttpError(404));
 	})
 })
+
+function getStreams(gameIDs, apiToken){
+	return new Promise((resolve, reject) => {
+		streams = []
+		for(gameId in gameIDs){
+			streams.push(getStream(gameIDs[gameId], apiToken));
+		}
+		Promise.allSettled(streams).then((values) => {
+			//format responses
+			var response = {}
+			for(stream in values){
+				//console.log(values[stream]);
+				response[getKeyByValue(gameIDs, values[stream].value.game_id)] = values[stream].value;
+			}
+			resolve(response);
+		});
+	});
+}
+
+
+function getStream(gameId, apiToken){
+	return new Promise((resolve, reject) => {
+		axios.get(`https://api.twitch.tv/helix/streams?game_id=${gameId}&first=1`, {
+			headers: {
+				'Accept': 'application/json',
+				'Client-ID': process.env.CLIENT_ID,
+				'Authorization': "Bearer " + apiToken
+			},
+		})
+		.then(response => {
+			console.log(response.data);
+			return response.data.data[0];
+		})
+		.then(data => {
+			resolve(data);
+		})
+		.catch(e => {
+			reject(e);
+			console.error(e);
+		})
+	})
+}  
+
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
+}
+  
 
 module.exports = router;
