@@ -69,7 +69,6 @@ router.get('/:gameID', (req, res, next) => {
 		return tempData;
 	})
 	.then((data) => {
-		
 		//make all changes to make data suitable here
 		data.first_release_date = data.first_release_date * 1000; //because timestamp doesn't include miliseconds
 		return data;
@@ -99,8 +98,6 @@ router.get('/:gameID', (req, res, next) => {
 			.catch(e => {
 				console.error(e);
 			})
-			//TODO: get list of streams for the current game
-			//develop a system to render it and switch source on change.
 		})
 		.catch(e => {
 			console.error(e);

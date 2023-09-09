@@ -1,0 +1,58 @@
+<div class="w-full grid grid-cols-4 grid-flow-row h-full">
+	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end bg-red-400">
+		<img src="{{profile_image_url}}" class="w-4/5 h-min rounded-full">
+		{{#if type}}
+			<span class="w-4/5 text-2xl">{{type}}</span>
+		{{/if}}
+		<span class="w-4/5 text-2xl text-center">Registered: {{dateformat created_at "DD/MM/YYYY"}}</span>
+
+		<div class="flex flex-row flex-wrap gap-3 mt-5 w-4/5">
+			{{#each websites}}
+				<a target="_blank" rel="noopener noreferrer" href="{{this.url}}" class="aspect-square w-8">
+					<img src="{{getFavicon this.url}}/favicon.ico" alt="{{getSite this.url}}" class="w-full text-sm">
+				</a>
+			{{/each}}
+		</div>
+	</div>
+	<div class="col-span-2 bg-green-400 pt-28 px-3 flex flex-col">
+		<div class="flex flex-row">
+			<h1 class="text-5xl font-semibold">{{display_name}}</h1>
+		</div>
+		{{#if broadcaster_type}}
+		<div class="text-xl flex flex-row gap-2 italic">
+			<span>{{broadcaster_type}}</span>
+		</div>
+		{{/if}}
+		<p class="text-normal py-6">
+			{{description}}
+		</p>
+		<div class="w-full bg-amber-300 mt-5">
+			<h2 class="text-3xl">Similar Games</h2>
+			<div class="grid grid-cols-4 gap-3" id="similar games list">
+				{{!-- {{#each similar_games}}
+					<a class="flex flex-col w-full" href="/game/{{this.id}}">
+						<img class="h-min w-full" src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{this.cover.image_id}}.png">
+						<span class="text-xl">{{this.name}}</span>
+						<iframe
+							src="https://player.twitch.tv/?channel={{this.stream.user_login}}&parent=localhost&muted=true"
+							height="auto"
+							width="100%"
+							allowfullscreen>
+						</iframe>
+					</a>
+				{{/each}} --}}
+			</div>
+		</div>
+		<p>game is {{gameID}}</p>
+	</div>
+	<div class="col-span-1 bg-blue-400">
+		{{!-- <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+		<div id="ChangeablePlayer"></div>
+		<script type="text/javascript">
+			var streams = {{streams}};
+		</script>
+		<script src="/public/javascript/stream.js"></script> --}}
+		current stream column
+	</div>
+</div>
+

@@ -16,6 +16,7 @@ var apiKey = require('./helpers/apiKey');
 var indexRouter = require('./routes/index');
 var gameRouter = require('./routes/game');
 var visitCounter = require('./helpers/visitCounter');
+var userRouter = require('./routes/users');
 
 var app = express();
 
@@ -49,6 +50,7 @@ app.use('/*', visitCounter);
 app.use('*', apiKey.router)
 app.use('/', indexRouter);
 app.use('/game', gameRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
