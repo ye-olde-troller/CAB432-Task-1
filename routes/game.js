@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var axios = require('axios');
+var {getStreams, getStream} = require('../helpers/api');
 const createHttpError = require('http-errors');
 
 router.get('/:gameID', (req, res, next) => {
@@ -110,50 +111,6 @@ router.get('/:gameID', (req, res, next) => {
 	})
 })
 
-function getStreams(gameIDs, apiToken){
-	return new Promise((resolve, reject) => {
-		streams = []
-		for(gameId in gameIDs){
-			streams.push(getStream(gameIDs[gameId], 1, apiToken));
-		}
-		Promise.allSettled(streams).then((values) => {
-			//format responses
-			var response = {}
-			for(stream in values){
-				//console.log(values[stream]);
-				//TODO: get videos for any games that don't have a current stream.
-				console.log(values[stream].value[0].game_id);
-				response[getKeyByValue(gameIDs, values[stream].value[0].game_id)] = values[stream].value[0];
-			}
-			resolve(response);
-		});
-	});
-}
-
-
-function getStream(gameId, streamCount, apiToken){
-	return new Promise((resolve, reject) => {
-		axios.get(`https://api.twitch.tv/helix/streams?game_id=${gameId}&first=${streamCount}`, {
-			headers: {
-				'Accept': 'application/json',
-				'Client-ID': process.env.CLIENT_ID,
-				'Authorization': "Bearer " + apiToken
-			},
-		})
-		.then(response => {
-//			console.log(response.data.data);
-			return response.data.data;
-		})
-		.then(data => {
-			resolve(data);
-		})
-		.catch(e => {
-			reject(e);
-			console.error(e);
-		})
-	})
-}  
-
 //call this if there's no streams for a given game
 //we replace the stream with a VOD instead
 function getVideos(gameId, apiToken){
@@ -162,9 +119,7 @@ function getVideos(gameId, apiToken){
 	})
 }
 
-function getKeyByValue(object, value) {
-	return Object.keys(object).find(key => object[key] === value);
-}
+
   
 
 module.exports = router;

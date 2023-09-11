@@ -2,7 +2,7 @@ var express = require('express');
 const createHttpError = require('http-errors');
 var router = express.Router();
 var axios = require('axios');
-
+var {getData, getGame} = require('../helpers/api');
 
 /* GET users listing. */
 router.get('/:userID', function(req, res, next) {
@@ -24,7 +24,7 @@ router.get('/:userID', function(req, res, next) {
     getData(data.id, res.locals.API_TOKEN)
     .then(count => {
       console.log("count: ", count);
-      res.render('users', { title: 'Express', userID: req.params.userID, ...data});
+      res.render('users', { title: 'Express', userID: req.params.userID, ...data, ...count[0]});
     })
     .catch(e => {
       console.error(e);
@@ -64,8 +64,9 @@ function getData(userId, API_TOKEN){
       }
 
       Promise.allSettled(games).then(values => {
+        console.log(values);
         for(entry in values){
-          if(values[entry].status == "fulfilled"){
+          if(values[entry].status == "fulfilled" && values[entry].value.length != 0){
             return values[entry].value;
           }
         }
@@ -89,13 +90,16 @@ function getGame(gameId, API_TOKEN){
     var body = `
       fields
       name,
+      summary,
+      first_release_date,
+      artworks.image_id,
       similar_games.name,
       similar_games.id,
       similar_games.cover.image_id,
       similar_games.external_games.uid,
       similar_games.external_games.category
       ;
-      where external_games.uid = "${gameId}";  
+      where external_games.uid = "${gameId}" & external_games.category = 14;  
     `
 
     axios.post("https://api.igdb.com/v4/games", body, {
@@ -106,11 +110,14 @@ function getGame(gameId, API_TOKEN){
       },
     })
     .then(response => {
-      return response.data;
-    })
-    .then(data => {
-      console.log(data);
-      resolve(data);
+      if(response.data.length != 0){
+        response.data[0].artwork = response.data[0].artworks[0];
+        delete response.data[0].artworks;
+        response.data[0].first_release_date = response.data[0].first_release_date * 1000;
+        resolve(response.data);
+        return response.data;
+      }
+      reject();
     })
     .catch(e => {
       console.error(e);
