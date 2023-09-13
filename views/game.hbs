@@ -1,5 +1,5 @@
 <div class="w-full grid grid-cols-4 grid-flow-row h-full">
-	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end bg-red-400">
+	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end">
 		<img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{cover.image_id}}.png" class="w-4/5 h-min">
 		<div class="flex flex-row flex-wrap gap-3 mt-5 w-4/5">
 			{{#each websites}}
@@ -10,7 +10,7 @@
 			
 		</div>
 	</div>
-	<div class="col-span-2 bg-green-400 pt-28 px-3 flex flex-col">
+	<div class="col-span-2 pt-28 px-3 flex flex-col">
 		<div class="flex flex-row">
 			<h1 class="text-5xl font-semibold">{{name}}</h1>
 			<span class="ps-2 text-2xl self-end">({{dateformat first_release_date "YYYY"}})</span>
@@ -35,7 +35,7 @@
 		<p class="text-normal">
 			{{summary}}
 		</p>
-		<div class="w-full bg-amber-300 mt-5">
+		<div class="w-full mt-5">
 			<h2 class="text-3xl">Similar Games</h2>
 			<div class="grid grid-cols-4 gap-3" id="similar games list">
 				{{#each similar_games}}
@@ -54,7 +54,7 @@
 		</div>
 		<p>game is {{gameID}}</p>
 	</div>
-	<div class="col-span-1 bg-blue-400">
+	<div class="col-span-1 ">
 		<script src= "https://player.twitch.tv/js/embed/v1.js"></script>
 		<div id="ChangeablePlayer"></div>
 		<script type="text/javascript">

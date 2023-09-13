@@ -1,5 +1,5 @@
 <div class="w-full grid grid-cols-4 grid-flow-row h-full">
-	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end bg-red-400">
+	<div class="col-span-1 flex flex-col pe-3 pt-10 justify-start items-end ">
 		<img src="{{profile_image_url}}" class="w-4/5 h-min rounded-full">
 		{{#if type}}
 			<span class="w-4/5 text-2xl">{{type}}</span>
@@ -14,7 +14,7 @@
 			{{/each}}
 		</div>
 	</div>
-	<div class="col-span-2 bg-green-400 pt-28 px-3 flex flex-col">
+	<div class="col-span-2pt-28 px-3 flex flex-col">
 		<div class="flex flex-row">
 			<h1 class="text-5xl font-semibold">{{display_name}}</h1>
 		</div>
@@ -27,7 +27,7 @@
 			{{description}}
 		</p>
 		{{#if name}}
-		<div class="w-full bg-blue-400" id="played-game">
+		<div class="w-full" id="played-game">
 			<h2 class="text-3xl">Most Played</h2>
 			<div class="flex flex-row">
 				<div class="flex flex-col w-2/3 pr-3">
@@ -41,7 +41,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-full bg-amber-300 mt-5">
+		<div class="w-full mt-5">
 			<h2 class="text-3xl">Similar Games</h2>
 			<div class="grid grid-cols-4 gap-3" id="similar games list">
 				{{#each similar_games}}
@@ -60,7 +60,7 @@
 		</div>
 		{{/if}}
 	</div>
-	<div class="col-span-1 bg-blue-400">
+	<div class="col-span-1">
 		{{!-- <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
 		<div id="ChangeablePlayer"></div>
 		<script type="text/javascript">
