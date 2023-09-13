@@ -26,6 +26,7 @@
 		<p class="text-normal py-6">
 			{{description}}
 		</p>
+		{{#if name}}
 		<div class="w-full bg-blue-400" id="played-game">
 			<h2 class="text-3xl">Most Played</h2>
 			<div class="flex flex-row">
@@ -57,7 +58,7 @@
 				{{/each}}
 			</div>
 		</div>
-		<p>game is {{gameID}}</p>
+		{{/if}}
 	</div>
 	<div class="col-span-1 bg-blue-400">
 		{{!-- <script src= "https://player.twitch.tv/js/embed/v1.js"></script>

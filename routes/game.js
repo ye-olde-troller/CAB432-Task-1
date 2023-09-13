@@ -84,7 +84,6 @@ router.get('/:gameID', (req, res, next) => {
 		//get a list of streams
 		getStreams(games, res.locals.API_TOKEN)
 		.then(streams => {
-			//console.log(streams);
 			for(game in data.similar_games){
 				data.similar_games[game].stream = streams[data.similar_games[game].id];
 			}

@@ -64,10 +64,11 @@ function getData(userId, API_TOKEN){
 		})
 		.then(data => {
 		var count = {};
+		//count the number of clips for each game
 		for(entry in data){
 			count[data[entry].game_id] = count[data[entry].game_id] ? count[data[entry].game_id] + 1 : 1;
 		}
-
+		//sort by view count
 		let entries = Object.entries(count);
 		let sorted = entries.sort((a, b) => b[1] - a[1]);
 		
@@ -80,6 +81,7 @@ function getData(userId, API_TOKEN){
 			console.log(values);
 			for(entry in values){
 			if(values[entry].status == "fulfilled" && values[entry].value.length != 0){
+				//return details on the game with the most clips
 				return values[entry].value;
 			}
 			}
