@@ -51,6 +51,7 @@ async function getObjectFromS3(bucketName, objectKey){
 	}
 	catch(err){
 		console.error("unable to get object: ", err);
+		return ({views: 0})
 	}
 }
 

@@ -19,11 +19,11 @@ router.get('*', (req, res, next) => {
 			console.log(value);
 			//increment counter
 			console.log('Visit');
-			req.locals.visits = value.views;
+			res.locals.visits = value.views;
 			next();			
 		})
 		.catch(err => {
-			console.err(err);
+			console.error(err);
 			next();
 		});		
 	})
