@@ -10,11 +10,8 @@ function getStreams(gameIDs, apiToken){
 			//format responses
 			var response = {}
 			for(stream in values){
-				//console.log(values[stream]);
 				//TODO: get videos for any games that don't have a current stream.
-				//console.log(values[stream]);
 				if(values[stream].value[0]){
-					console.log(values[stream].value[0].game_id);
 					response[getKeyByValue(gameIDs, values[stream].value[0].game_id)] = values[stream].value[0];
 				}
 			}
@@ -34,7 +31,6 @@ function getStream(gameId, streamCount, apiToken){
 			},
 		})
 		.then(response => {
-			//console.log("gameId: ", response.data.data);
 			return response.data.data;
 		})
 		.then(data => {
@@ -125,6 +121,7 @@ function getGame(gameId, API_TOKEN){
 		})
 		.then(response => {
 		if(response.data.length != 0){
+			//necessary to do this so that we can access the image in handlebars
 			response.data[0].artwork = response.data[0].artworks[0];
 			delete response.data[0].artworks;
 			response.data[0].first_release_date = response.data[0].first_release_date * 1000;
@@ -140,8 +137,133 @@ function getGame(gameId, API_TOKEN){
 	})
 }
 
+function getUsers(API_TOKEN){
+	return new Promise((resolve, reject) => {
+		//use the streams endpoint first because there's no way to just get a list of popular users.
+		axios.get(`https://api.twitch.tv/helix/streams`, {
+			headers: {
+			'Accept': 'application/json',
+			'Client-ID': process.env.CLIENT_ID,
+			'Authorization': "Bearer " + API_TOKEN
+			},
+		})
+		.then(response => {
+			return response.data.data;
+		})
+		.then(data => {
+			userRequests = []
+			for(entry in data){
+				userRequests.push(getUser(data[entry].user_id, API_TOKEN));
+			}
+			//wait until we have all users
+			Promise.allSettled(userRequests).then(values => {
+				response = [];
+				//only add ones which had requests which succeeded
+				for(entry in values){
+					if(values[entry].status === "fulfilled"){
+						response.push(values[entry].value);
+					}
+				}
+				resolve(response);
+			})
+		})
+		.catch(e => {
+			console.error(e);
+			reject(e);
+		});		
+	});
+}
+
+function getUser(userID, API_TOKEN){
+	return new Promise((resolve, reject) => {
+		axios.get(`https://api.twitch.tv/helix/users?id=${userID}`, {
+			headers: {
+				'Accept': 'application/json',
+				'Client-ID': process.env.CLIENT_ID,
+				'Authorization': "Bearer " + API_TOKEN
+			},
+		})
+		.then(response => {
+			resolve(response.data.data[0]);
+		})
+		.catch(e => {
+			reject(e);
+		})
+	})
+}
+
+function getGames(API_TOKEN){
+	return new Promise((resolve, reject) => {
+		var body = `
+		fields
+		name,
+		cover.image_id;
+		where cover != null;
+		`
+
+		axios.post("https://api.igdb.com/v4/games", body, {
+		headers: {
+			'Accept': 'application/json',
+			'Client-ID': process.env.CLIENT_ID,
+			'Authorization': "Bearer " + API_TOKEN
+		},
+		})
+		.then(response => {
+			resolve(response.data);
+		})
+		.catch(e => {
+			console.error(e);
+			reject(e);
+		})
+	})
+}
+
+function search(query, API_TOKEN){
+	return new Promise((resolve, reject) => {
+		axios.get(`https://api.twitch.tv/helix/search/channels?query=${query}`, {
+			headers: {
+			'Accept': 'application/json',
+			'Client-ID': process.env.CLIENT_ID,
+			'Authorization': "Bearer " + API_TOKEN
+			},
+		})
+		.then(user => {
+			return user.data.data;
+		})
+		.then(user => {
+			var body = `
+			fields
+			name,
+			cover.image_id;
+			where cover != null & name ~ *"${query}"*;
+			`
+
+			axios.post("https://api.igdb.com/v4/games", body, {
+			headers: {
+				'Accept': 'application/json',
+				'Client-ID': process.env.CLIENT_ID,
+				'Authorization': "Bearer " + API_TOKEN
+			},
+			})
+			.then(response => {
+				return response.data;
+			})
+			.then(games => {
+				resolve({games: games, users: user});
+			})
+			.catch(e => {
+				reject(e);
+			})
+		})
+		.catch(e => {
+			reject(e);
+		})
+	})
+}
+
+
 function getKeyByValue(object, value) {
 	return Object.keys(object).find(key => object[key] === value);
 }
 
-module.exports = {getStreams, getStream, getData, getGame};
+module.exports = {getStreams, getStream, getData, getGame, getGames, getUsers, search};

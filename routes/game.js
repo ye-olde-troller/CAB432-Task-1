@@ -78,7 +78,12 @@ router.get('/:gameID', (req, res, next) => {
 		var games = {}
 		//get the list of similar games in format {igdb id: twitch game id}
 		for(game in data.similar_games){
-			games[data.similar_games[game].id] = data.similar_games[game].external_games.find(entry => entry.category == 14).uid;
+			if(data.similar_games[game].external_games.find(entry => entry.category == 14) != undefined){
+				games[data.similar_games[game].id] = data.similar_games[game].external_games.find(entry => entry.category == 14).uid;
+			}
+			else{
+				delete data.similar_games[game];
+			}
 		}
 		//get a list of streams for similar games
 		getStreams(games, res.locals.API_TOKEN)
@@ -88,36 +93,17 @@ router.get('/:gameID', (req, res, next) => {
 			}
 		})
 		.then(() => {
-			getStream(data.similar_games[game].external_games.find(entry => entry.category == 14).uid, 10, res.locals.API_TOKEN)
-			.then(streams => {
-				data.streams = streams;
-				console.log(streams);
-				res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
-			})
-			.catch(e => {
-				console.error(e);
-			})
+			res.render('game', { title: 'Express', gameID: req.params.gameID, ...data});
 		})
 		.catch(e => {
 			console.error(e);
 		})
-		//console.log(games);
 	})
 	.catch(e => {
-		console.log(e);
+		console.error(e);
 		next(createHttpError(404));
 	})
 })
-
-//call this if there's no streams for a given game
-//we replace the stream with a VOD instead
-function getVideos(gameId, apiToken){
-	return new Promise((resolve, reject) => {
-
-	})
-}
-
-
-  
+ 
 
 module.exports = router;

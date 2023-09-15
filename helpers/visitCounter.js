@@ -3,11 +3,11 @@
 var express = require('express');
 var router = express.Router();
 var {uploadJSONtoS3, getObjectFromS3} = require('./S3Manager');
-const createHttpError = require('http-errors');
 
 const bucketName = process.env.BUCKET_NAME;
 const objectKey = process.env.OBJECT_KEY;
 
+//need an entry for each page we want to count a visit on
 router.get(["/game", "/user", "/", "/search"], (req, res, next) => {
 	console.log(bucketName);
 	getObjectFromS3(bucketName, objectKey)

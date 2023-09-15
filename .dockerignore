@@ -3,5 +3,6 @@
 *.drawio
 .env
 *.gif
+*.yml
 node_modules
 docker-compose.yml

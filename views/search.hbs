@@ -1,0 +1,30 @@
+<div class="w-full grid grid-cols-5 grid-flow-row h-full">
+	<div class="col-span-1">
+	</div>
+	<div class="col-span-3">
+		<div class="w-full flex flex-col px-16 py-10">
+			<span class="text-4xl font-bold">Users</span>
+			<div class="w-full grid grid-cols-8 grid-flow-row gap-3 pt-6">
+				{{#each users}}
+					<a class="rounded-lg bg-black bg-opacity-0 hover:bg-opacity-25 px-2 pt-2 pb-5" href="/user/{{this.broadcaster_login}}">
+						<img src="{{this.thumbnail_url}}" class="rounded-full w-full">
+						<span class="mt-2 text-2xl text-center w-full inline-block">{{this.display_name}}</span>
+					</a>
+				{{/each}}				
+			</div>
+		</div>
+		<div class="w-full flex flex-col px-16 py-10">
+			<span class="text-4xl font-bold">Games</span>
+			<div class="w-full grid grid-cols-8 grid-flow-row gap-3 pt-6">
+				{{#each games}}
+					<a class="rounded-lg bg-black bg-opacity-0 hover:bg-opacity-25 px-2 pt-2 pb-5" href="/game/{{this.id}}">
+						<img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{this.cover.image_id}}.png" class="rounded-lg w-full">
+						<span class="mt-2 text-2xl text-start w-full inline-block">{{this.name}}</span>
+					</a>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+	<div class="col-span-1">
+	</div>	
+</div>

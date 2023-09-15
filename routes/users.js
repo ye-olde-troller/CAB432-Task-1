@@ -21,14 +21,10 @@ router.get('/:userID', function(req, res, next) {
       next(createHttpError(404));
       return;
     }
-    //console.log(data);
-    //channels endpoint has the most recent game they played
-    //can't currently find a way to get the game played in all their recent streams
 
     getData(data.id, res.locals.API_TOKEN)
     .then(mostStreamed => {
       //prints the most streamed game
-      //console.log("count: ", count);
       if(mostStreamed == undefined){
         //if we're unable to get a most streamed game
         res.render('users', { title: 'Express', userID: req.params.userID, ...data});
@@ -48,7 +44,6 @@ router.get('/:userID', function(req, res, next) {
         }
       })
       .then(() => {
-        console.log(mostStreamed[0].similar_games);
         res.render('users', { title: 'Express', userID: req.params.userID, ...data, ...mostStreamed[0]});
       })
       .catch((e) => {
