@@ -46,7 +46,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/*', visitCounter);
+app.use("*", visitCounter);
 app.use('*', apiKey.router)
 app.use('/', indexRouter);
 app.use('/game', gameRouter);

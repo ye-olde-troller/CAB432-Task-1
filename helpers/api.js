@@ -12,7 +12,7 @@ function getStreams(gameIDs, apiToken){
 			for(stream in values){
 				//console.log(values[stream]);
 				//TODO: get videos for any games that don't have a current stream.
-				console.log(values[stream]);
+				//console.log(values[stream]);
 				if(values[stream].value[0]){
 					console.log(values[stream].value[0].game_id);
 					response[getKeyByValue(gameIDs, values[stream].value[0].game_id)] = values[stream].value[0];
@@ -34,7 +34,7 @@ function getStream(gameId, streamCount, apiToken){
 			},
 		})
 		.then(response => {
-			console.log("gameId: ", response.data.data);
+			//console.log("gameId: ", response.data.data);
 			return response.data.data;
 		})
 		.then(data => {
@@ -78,7 +78,6 @@ function getData(userId, API_TOKEN){
 		}
 
 		Promise.allSettled(games).then(values => {
-			console.log(values);
 			for(entry in values){
 			if(values[entry].status == "fulfilled" && values[entry].value.length != 0){
 				//return details on the game with the most clips

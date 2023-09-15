@@ -14,7 +14,7 @@
 			{{/each}}
 		</div>
 	</div>
-	<div class="col-span-2pt-28 px-3 flex flex-col">
+	<div class="col-span-2 pt-28 px-3 flex flex-col">
 		<div class="flex flex-row">
 			<h1 class="text-5xl font-semibold">{{display_name}}</h1>
 		</div>
@@ -48,12 +48,12 @@
 					<a class="flex flex-col w-full" href="/game/{{this.id}}">
 						<img class="h-min w-full" src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{{this.cover.image_id}}.png">
 						<span class="text-xl">{{this.name}}</span>
-						{{!-- <iframe
+						<iframe
 							src="https://player.twitch.tv/?channel={{this.stream.user_login}}&parent=localhost&muted=true"
 							height="auto"
 							width="100%"
 							allowfullscreen>
-						</iframe> --}}
+						</iframe>
 					</a>
 				{{/each}}
 			</div>

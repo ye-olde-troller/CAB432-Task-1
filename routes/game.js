@@ -75,13 +75,12 @@ router.get('/:gameID', (req, res, next) => {
 		return data;
 	})
 	.then((data) => {
-		//${data.external_games.find(element => element.category == 14).uid}
 		var games = {}
 		//get the list of similar games in format {igdb id: twitch game id}
 		for(game in data.similar_games){
 			games[data.similar_games[game].id] = data.similar_games[game].external_games.find(entry => entry.category == 14).uid;
 		}
-		//get a list of streams
+		//get a list of streams for similar games
 		getStreams(games, res.locals.API_TOKEN)
 		.then(streams => {
 			for(game in data.similar_games){

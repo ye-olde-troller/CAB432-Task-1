@@ -8,7 +8,7 @@ const createHttpError = require('http-errors');
 const bucketName = process.env.BUCKET_NAME;
 const objectKey = process.env.OBJECT_KEY;
 
-router.get('*', (req, res, next) => {
+router.get(["/game", "/user", "/", "/search"], (req, res, next) => {
 	console.log(bucketName);
 	getObjectFromS3(bucketName, objectKey)
 	.then(value => {
